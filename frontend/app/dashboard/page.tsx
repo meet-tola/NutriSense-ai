@@ -1,235 +1,241 @@
-import { redirect } from "next/navigation";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, TrendingUp, Utensils, Activity } from "lucide-react";
+"use client"
 
-export default async function DashboardPage() {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Camera, TrendingUp, Utensils, Activity, Apple, Calculator, Upload, Send, Sparkles } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+export default function DashboardPage() {
+    
+  const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([
+    {
+      role: "assistant",
+      content: "",
+    },
+  ])
+  const [input, setInput] = useState("")
+  const [isTyping, setIsTyping] = useState(true)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { data: recentLogsData } = await supabase
-    .from("food_logs")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("logged_at", { ascending: false })
-    .limit(5);
+  const initialMessage = "Hello! I'm your diabetes health assistant. I can help you track meals, analyze nutrition, and manage your blood sugar levels. How can I assist you today?"
 
-  const recentLogs = recentLogsData ?? [];
+  useEffect(() => {
+    let index = 0
+    const timer = setInterval(() => {
+      if (index < initialMessage.length) {
+        setMessages(prev => prev.map((msg, i) => 
+          i === 0 ? { ...msg, content: initialMessage.slice(0, index + 1) } : msg
+        ))
+        index++
+      } else {
+        setIsTyping(false)
+        clearInterval(timer)
+      }
+    }, 50)
+    return () => clearInterval(timer)
+  }, [])
 
-  const { data: gapsData } = await supabase
-    .from("nutritional_gaps")
-    .select("*")
-    .eq("user_id", user.id)
-    .limit(3);
+  const handleSend = () => {
+    if (!input.trim()) return
+    setMessages([...messages, { role: "user", content: input }])
+    setInput("")
+    // Simulate AI response
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "I understand you're asking about that. Let me help you with personalized health insights based on your diabetes management needs.",
+        },
+      ])
+    }, 1000)
+  }
 
-  const gaps = gapsData ?? [];
+  const handleImageUpload = () => {
+    fileInputRef.current?.click()
+  }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8 animate-fade-in">
-          <div>
-            <h1 className="text-2xl font-medium text-gray-900">
-              Welcome back, {profile?.full_name || "User"}
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Track your nutrition and health goals
-            </p>
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-blue-50 flex flex-col">
+      {/* Top Section - Centered Heading */}
+      <div className="shrink-0 py-12 px-4 text-center border-b border-border">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Sparkles className="w-8 h-8 text-primary" />
+            </div>
           </div>
-          <form action="/actions/sign-out">
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              className="text-gray-500 hover:text-gray-900"
-            >
-              Sign Out
-            </Button>
-          </form>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link href="/analyzer">
-            <Card className="group hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-gray-300 cursor-pointer animate-slide-up">
-              <CardContent className="pt-6 pb-6 flex flex-col items-center text-center space-y-3">
-                <div className="h-10 w-10 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200">
-                  <Camera className="h-5 w-5 text-gray-600" />
-                </div>
-                <h3 className="font-medium text-gray-900 text-sm">Scan Food</h3>
-                <p className="text-xs text-gray-500">Analyze your meal</p>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Link href="/meals">
-            <Card
-              className="group hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-gray-300 cursor-pointer animate-slide-up"
-              style={{ animationDelay: "100ms" }}
-            >
-              <CardContent className="pt-6 pb-6 flex flex-col items-center text-center space-y-3">
-                <div className="h-10 w-10 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200">
-                  <Utensils className="h-5 w-5 text-gray-600" />
-                </div>
-                <h3 className="font-medium text-gray-900 text-sm">
-                  Meal Plans
-                </h3>
-                <p className="text-xs text-gray-500">Get suggestions</p>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Link href="/analytics">
-            <Card
-              className="group hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-gray-300 cursor-pointer animate-slide-up"
-              style={{ animationDelay: "200ms" }}
-            >
-              <CardContent className="pt-6 pb-6 flex flex-col items-center text-center space-y-3">
-                <div className="h-10 w-10 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200">
-                  <TrendingUp className="h-5 w-5 text-gray-600" />
-                </div>
-                <h3 className="font-medium text-gray-900 text-sm">Analytics</h3>
-                <p className="text-xs text-gray-500">View insights</p>
-              </CardContent>
-            </Card>
-          </Link>
-
-          {profile?.has_diabetes && (
-            <Link href="/diabetes">
-              <Card
-                className="group hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-gray-300 cursor-pointer animate-slide-up"
-                style={{ animationDelay: "300ms" }}
-              >
-                <CardContent className="pt-6 pb-6 flex flex-col items-center text-center space-y-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200">
-                    <Activity className="h-5 w-5 text-gray-600" />
-                  </div>
-                  <h3 className="font-medium text-gray-900 text-sm">
-                    Diabetes
-                  </h3>
-                  <p className="text-xs text-gray-500">Manage blood sugar</p>
-                </CardContent>
-              </Card>
-            </Link>
-          )}
-        </div>
-
-        {/* Recent Activity & Insights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Food Logs */}
-          <Card className="animate-fade-in">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-medium text-gray-900">
-                Recent Food Logs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {recentLogs?.length > 0 ? (
-                <div className="space-y-3">
-                  {recentLogs.map((log, index) => (
-                    <div
-                      key={log.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-md transition-colors duration-150 hover:bg-gray-100 animate-slide-up"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">
-                          {log.food_name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {log.meal_type} •{" "}
-                          {log.calories
-                            ? `${Math.round(log.calories)} cal`
-                            : "N/A"}
-                        </p>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(log.logged_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">No food logs yet</p>
-                  <Button asChild variant="outline" size="sm">
-                    <Link href="/analyzer">Log your first meal</Link>
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Nutritional Gaps */}
-          <Card className="animate-fade-in">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-medium text-gray-900">
-                Nutritional Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {gaps?.length > 0 ? (
-                <div className="space-y-3">
-                  {gaps.map((gap, index) => (
-                    <div
-                      key={gap.id}
-                      className={`p-3 rounded-md border transition-all duration-150 hover:shadow-sm animate-slide-up ${
-                        gap.severity === "high"
-                          ? "bg-red-50 border-red-200"
-                          : gap.severity === "moderate"
-                          ? "bg-yellow-50 border-yellow-200"
-                          : "bg-blue-50 border-blue-200"
-                      }`}
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm">
-                            {gap.nutrient_name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Current: {gap.current_intake} {gap.unit} / Target:{" "}
-                            {gap.recommended_intake} {gap.unit}
-                          </p>
-                        </div>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full font-medium ${
-                            gap.severity === "high"
-                              ? "bg-red-100 text-red-800"
-                              : gap.severity === "moderate"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
-                          {gap.severity}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Log more meals to see nutritional insights
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <h1 className="text-4xl md:text-5xl text-foreground mb-3 text-balance font-serif">
+            Manage Your Diabetes Health Journey
+          </h1>
+          <p className="text-muted-foreground text-base md:text-lg text-pretty">
+            Track your nutrition, scan meals with AI, and get personalized insights for better diabetes management.
+          </p>
         </div>
       </div>
+
+      {/* Middle Section - Feature Buttons + Chat Interface */}
+      <div className="flex-1 overflow-hidden flex flex-col">
+        {/* Feature Action Buttons */}
+        <div className="shrink-0 py-6 px-4 border-b border-border">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              <Button
+                onClick={handleImageUpload}
+                variant="outline"
+                className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+              >
+                <Camera className="w-5 h-5 text-primary" />
+                <span className="font-medium">Scan Food</span>
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setMessages((prev) => [
+                      ...prev,
+                      { role: "user", content: `Uploaded image: ${file.name}` },
+                      {
+                        role: "assistant",
+                        content:
+                          "Analyzing your food image... I can see this appears to be a healthy meal. Let me provide nutritional details.",
+                      },
+                    ])
+                  }
+                }}
+              />
+
+              <Link href="/meals">
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+                >
+                  <Utensils className="w-5 h-5 text-primary" />
+                  <span className="font-medium">Meal Planner</span>
+                </Button>
+              </Link>
+
+              <Link href="/analytics">
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+                >
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <span className="font-medium">Analytics</span>
+                </Button>
+              </Link>
+
+              <Button
+                variant="outline"
+                className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+              >
+                <Activity className="w-5 h-5 text-primary" />
+                <span className="font-medium">Blood Sugar</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+              >
+                <Calculator className="w-5 h-5 text-primary" />
+                <span className="font-medium">Calculator</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="flex items-center gap-3 h-auto py-3 px-5 min-w-fit rounded-full border-2 hover:bg-accent hover:border-primary transition-all whitespace-nowrap bg-transparent"
+              >
+                <Apple className="w-5 h-5 text-primary" />
+                <span className="font-medium">Food Database</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Chat Messages Area */}
+<div className="flex-1 overflow-y-auto px-4 py-6 bg-white">
+  <div className="max-w-3xl mx-auto space-y-4">
+
+    {messages.map((message, index) => (
+      <div
+        key={index}
+        className={`flex ${
+          message.role === "user" ? "justify-end" : "justify-start"
+        } animate-in fade-in-50 duration-500 slide-in-from-bottom-2`}
+      >
+        <Card
+          className={`
+            max-w-[85%] md:max-w-[75%]
+            rounded-xl border
+            bg-white
+            ${message.role === "user"
+              ? "border-gray-400"
+              : "border-gray-300"
+            }
+          `}
+        >
+          <CardContent className="p-3">
+            <p className="text-sm leading-relaxed text-gray-900">
+              {message.content}
+              {message.role === "assistant" && index === 0 && isTyping && (
+                <span className="animate-pulse">|</span>
+              )}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    ))}
+
+  </div>
+</div>
+
+
+        {/* Fixed Bottom Input */}
+        <div className="shrink-0 border-t border-border bg-background/80 backdrop-blur-sm">
+          <div className="max-w-3xl mx-auto px-4 py-4">
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleImageUpload}
+                variant="outline"
+                size="icon"
+                className="rounded-full shrink-0 border-2 bg-transparent"
+              >
+                <Upload className="w-5 h-5 text-muted-foreground" />
+              </Button>
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                placeholder="Ask about nutrition, meals, or diabetes management..."
+                className="flex-1 rounded-full border-2 px-4 py-6 text-base focus-visible:ring-primary"
+              />
+              <Button
+                onClick={handleSend}
+                size="icon"
+                className="rounded-full shrink-0 bg-primary hover:bg-primary/90"
+              >
+                <Send className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Disclaimer */}
+      <div className="shrink-0 border-t border-border bg-muted/30 px-4 py-6 text-center">
+        <p className="text-xs text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+          By using this app, you agree that we may use your health data to provide personalized recommendations and
+          improve our services in accordance with our Privacy Policy. We maintain strict confidentiality and security
+          standards for all health information.
+        </p>
+      </div>
     </div>
-  );
+  )
 }
