@@ -5,7 +5,7 @@ import { Camera, TrendingUp, DollarSign, Heart } from "lucide-react"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-blue-50">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -80,7 +80,7 @@ export default function HomePage() {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-20 max-w-3xl mx-auto text-center p-8 bg-gradient-to-r from-teal-100 to-blue-100 rounded-2xl text-gray-900">
+        <div className="mt-20 max-w-3xl mx-auto text-center p-8 bg-linear-to-r from-teal-100 to-blue-100 rounded-2xl text-gray-900">
           <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Nutrition?</h2>
           <p className="text-lg mb-6 text-gray-600">
             Join thousands of users making healthier choices with AI-powered insights
