@@ -524,7 +524,7 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace("/auth/signin");
+        router.replace("/login");
         return;
       }
 
@@ -648,7 +648,7 @@ export default function OnboardingPage() {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      router.push("/auth/signin");
+      router.push("/login");
       return;
     }
 

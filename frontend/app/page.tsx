@@ -86,7 +86,7 @@ export default function HomePage() {
             Join thousands of users making healthier choices with AI-powered insights
           </p>
           <Button asChild size="lg" variant="default">
-            <Link href="/auth/signup">Start Your Free Journey</Link>
+            <Link href="/signup">Start Your Free Journey</Link>
           </Button>
         </div>
       </div>
