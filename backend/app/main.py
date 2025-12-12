@@ -11,6 +11,10 @@ from pydantic import BaseModel, Field
 from app.services.classification_service import classify_food
 import logging
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Import new modules for YOLO + Mistral + Heuristics
 from app.yolo import YOLOFoodDetector
 # TODO: Re-enable DeepSeek integration when needed
