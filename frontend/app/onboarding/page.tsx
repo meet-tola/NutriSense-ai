@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -497,6 +496,28 @@ export default function OnboardingPage() {
   const supabase = getSupabaseBrowserClient();
   const [isChecking, setIsChecking] = useState(true); 
 
+  const [formData, setFormData] = useState<FormData>({
+    country: "",
+    region: "",
+    age: "",
+    weight: "",
+    height: "",
+    gender: "",
+    primaryGoal: "",
+    secondaryGoals: [],
+    eatingPattern: "",
+    activityLevel: "",
+    weeklyBudget: "",
+    selectedDietary: [],
+    selectedCuisines: [],
+    allergies: "",
+    selectedConditions: [],
+    hasDiabetes: false,
+    diabetesType: "",
+    targetBSMin: "",
+    targetBSMax: "",
+  });
+
   // Redirect to dashboard if onboarding already completed
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -543,29 +564,6 @@ export default function OnboardingPage() {
       </div>
     );
   }
-
-  const [formData, setFormData] = useState<FormData>({
-    country: "",
-    region: "",
-    age: "",
-    weight: "",
-    height: "",
-    gender: "",
-    primaryGoal: "",
-    secondaryGoals: [],
-    eatingPattern: "",
-    activityLevel: "",
-    weeklyBudget: "",
-    selectedDietary: [],
-    selectedCuisines: [],
-    allergies: "",
-    selectedConditions: [],
-    hasDiabetes: false,
-    diabetesType: "",
-    targetBSMin: "",
-    targetBSMax: "",
-  });
-
   const currentField = allFields[step - 1];
 
   const handleInputChange = (key: string, value: string | string[]) => {
