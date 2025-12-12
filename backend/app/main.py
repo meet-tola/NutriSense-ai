@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from io import BytesIO
 from PIL import Image
 from pathlib import Path
+from app.services.nutrition_service import analyze_food
 import os
 
 app = FastAPI()
@@ -36,7 +37,12 @@ async def scan_food(file: UploadFile = File(...)):
         {"class": r.boxes.cls[0].item(), "confidence": r.boxes.conf[0].item()}
         for r in results
     ]
-    return {"detections": detections}
+    nutrition_results = analyze_food(detections)
+    return {
+        "detections": detections,
+        "nutrition": nutrition_results
+}
+
 
 @app.get("/health")
 def health():
