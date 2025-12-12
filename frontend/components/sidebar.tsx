@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Home,
-  BookOpen,
   Apple,
   Book,
   Database,
@@ -54,7 +53,7 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "health-diary", label: "My Health Diary", icon: Book, href: "/health-diary" },
     { id: "meal-planner", label: "Meal Planner", icon: Apple, href: "/meal-planner" },
-    { id: "nutrition-guide", label: "Nutrition Guide", icon: BookOpen, href: "/nutrition-guide" },
+    // { id: "nutrition-guide", label: "Nutrition Guide", icon: BookOpen, href: "/nutrition-guide" },
     { id: "food-database", label: "Food Database", icon: Database, href: "/food-database" },
   ];
 
