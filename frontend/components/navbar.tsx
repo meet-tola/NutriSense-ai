@@ -33,7 +33,7 @@ const Navbar = ({ onMenuToggle, user }: NavbarProps) => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push("/auth/signin"); // Updated to match redirect path
+    router.push("/login"); // Updated to match redirect path
   };
 
   return (
