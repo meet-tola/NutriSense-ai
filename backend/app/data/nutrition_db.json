@@ -1,14 +1,62 @@
 {
   "Aganyi Beans": {
-    "calories": 155,
-    "carbs": 28,
-    "protein": 10,
-    "fat": 3
+    "calories": 347
   },
   "Aganyi Stew": {
-    "calories": 120,
-    "carbs": 8,
-    "protein": 6,
-    "fat": 7
+    "calories": 120
+  },
+  "Jollof Rice": {
+    "calories": 180
+  },
+  "Fried Plantain": {
+    "calories": 239
+  },
+  "Moi Moi": {
+    "calories": 151
+  },
+  "Efo Riro": {
+    "calories": 100
+  },
+  "Pounded Yam": {
+    "calories": 330
+  },
+  "Egusi Soup": {
+    "calories": 180
+  },
+  "Steamed Fish": {
+    "calories": 130
+  },
+  "Fried Chicken": {
+    "calories": 239
+  },
+  "Vegetable Salad": {
+    "calories": 50
+  },
+  "Ogi": {
+    "calories": 68
+  },
+  "Yam Porridge": {
+    "calories": 140
+  },
+  "Okra Soup": {
+    "calories": 120
+  },
+  "Rice and Beans": {
+    "calories": 180
+  },
+  "Boli (Roasted Plantain)": {
+    "calories": 200
+  },
+  "Ewedu Soup": {
+    "calories": 90
+  },
+  "Pepper Soup": {
+    "calories": 50
+  },
+  "Fufu": {
+    "calories": 330
+  },
+  "Stew": {
+    "calories": 110
   }
 }
