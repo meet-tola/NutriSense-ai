@@ -542,3 +542,9 @@
 //     </main>
 //   )
 // }
+
+export default function Page() {
+    return (
+        <div>Meal Planner</div>
+    );
+}
