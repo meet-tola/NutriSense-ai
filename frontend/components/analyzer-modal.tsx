@@ -624,8 +624,8 @@ export default function AnalyzerModal({
                   </div>
                   {finalResult.meal_summary?.score ? (
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">Quality: {finalResult.meal_summary?.quality || "N/A"}</Badge>
-                      <Badge variant="secondary">Score {Math.round(finalResult.meal_summary.score)}/100</Badge>
+                      <Badge variant="outline">Quality: {String(finalResult.meal_summary?.quality || "N/A")}</Badge>
+                      <Badge variant="secondary">Score {Math.round(Number(finalResult.meal_summary.score))}/100</Badge>
                     </div>
                   ) : null}
                 </div>
@@ -682,7 +682,7 @@ export default function AnalyzerModal({
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Quality</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.quality ?? "—"}</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.quality ?? "—")}</p>
                         </div>
                       </div>
                     </CardContent>
