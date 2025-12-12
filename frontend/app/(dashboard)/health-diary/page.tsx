@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Dashboard from "@/components/health-diary-dashboard"
 
 type TrackingGoal = "weight" | "diet" | "health" | "fitness"
 type DietType = "balanced" | "keto" | "vegetarian" | "vegan" | "mediterranean" | "diabetic"
@@ -473,10 +474,6 @@ function HealthMetricsSection({ onComplete, goal }: { onComplete: () => void; go
   )
 }
 
-function Dashboard({ userProfile, selectedGoal }: { userProfile: UserProfile; selectedGoal: TrackingGoal }) {
-  // Dashboard stays unchanged — you can de-color it later if you want!
-  return <div className="min-h-screen bg-gray-50">Dashboard content...</div>
-}
 
 export default function SmartNutritionPage() {
   const { toast } = useToast()
@@ -563,8 +560,8 @@ export default function SmartNutritionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto p-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="bg-white max-w-5xl mx-auto p-12 rounded-lg">
         <Toaster />
         <AnimatePresence mode="wait">
           {step === "welcome" && (
