@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 from PIL import Image
 from pathlib import Path
@@ -10,6 +11,10 @@ from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 from app.services.classification_service import classify_food
 import logging
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
 
 # Import new modules for YOLO + Mistral + Heuristics
 from app.yolo import YOLOFoodDetector
@@ -219,7 +224,7 @@ app = FastAPI(
                "• **Multi-Component Scoring** - Diversity, completeness, GL, fiber, protein, fat quality, sodium\n"
                "• **Hierarchical Analysis** - Primary detection + hierarchical classification + heuristics\n\n"
                "**Supported Conditions:**\n"
-               "🩺 Diabetes | 🩺 Hypertension | 🩺 Ulcers | 🩺 Acid Reflux | 🩺 Weight Management",
+               "Diabetes | Hypertension | Ulcers | Acid Reflux | Weight Management",
     version="2.0",
     contact={
         "name": "NutriSense Team",
@@ -239,6 +244,19 @@ app = FastAPI(
             "description": "Refine detected items and recalculate nutrition"
         }
     ]
+)
+
+# Configure CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",           
+        "http://localhost:8000",           
+        "https://nutri-sense-ai-eight.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 BASE_DIR = Path(__file__).resolve().parent
