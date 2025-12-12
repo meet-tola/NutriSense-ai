@@ -218,8 +218,8 @@ export default function AnalyzerModal({
     if (!selectedImage || !userId) return;
 
     setIsAnalyzing(true);
-    setPipelineStage("detecting");
-    setStatusMessage("Detecting food…");
+    setPipelineStage("analyzing");
+    setStatusMessage("Analyzing meal…");
     setError(null);
     setFinalResult(null);
 
@@ -506,13 +506,11 @@ export default function AnalyzerModal({
               <div>
                 <p className="font-medium text-gray-900">{statusMessage || "Working..."}</p>
                 <p className="text-sm text-gray-600">
-                  {pipelineStage === "detecting"
-                    ? "Detecting food…"
-                    : pipelineStage === "analyzing"
-                      ? "Analyzing meal nutrition…"
-                      : pipelineStage === "insights"
-                        ? "Generating insights…"
-                        : "Processing…"}
+                  {pipelineStage === "analyzing"
+                    ? "Analyzing meal…"
+                    : pipelineStage === "insights"
+                      ? "Generating insights…"
+                      : "Processing…"}
                 </p>
               </div>
             </div>
