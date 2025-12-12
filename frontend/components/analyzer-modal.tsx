@@ -638,19 +638,19 @@ export default function AnalyzerModal({
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <p className="text-xs text-gray-500">Calories</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_calories ?? "—"} kcal</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_calories ?? "—")} kcal</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Carbs</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_carbs ?? "—"} g</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_carbs ?? "—")} g</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Protein</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_protein ?? "—"} g</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_protein ?? "—")} g</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Fat</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_fat ?? "—"} g</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_fat ?? "—")} g</p>
                         </div>
                       </div>
                       {finalResult.meal_summary?.score ? (
@@ -670,15 +670,15 @@ export default function AnalyzerModal({
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <p className="text-xs text-gray-500">Glycemic Load</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.glycemic_load ?? "—"}</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.glycemic_load ?? "—")}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Fiber</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_fiber ?? "—"} g</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_fiber ?? "—")} g</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Sodium</p>
-                          <p className="font-semibold">{finalResult.meal_summary?.total_sodium ?? "—"} mg</p>
+                          <p className="font-semibold">{String(finalResult.meal_summary?.total_sodium ?? "—")} mg</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Quality</p>
