@@ -1,11 +1,11 @@
 from ultralytics import YOLO
-from transformers import AutoImageProcessor, AutoModelForImageClassification, pipeline
 from fastapi import FastAPI, UploadFile, File, Form
 from io import BytesIO
 from PIL import Image
 from pathlib import Path
 import json
 import os
+from app.services.classification_service import classify_food
 
 app = FastAPI(title="NutriSense API", version="1.0")
 
@@ -21,20 +21,6 @@ def get_yolo_model():
             raise FileNotFoundError(f"YOLO model not found at {YOLO_PATH}")
         _yolo_model = YOLO(str(YOLO_PATH))
     return _yolo_model
-
-# Classifier (nateraw/food) for fallback
-HF_MODEL_PATH = BASE_DIR / "ml_models" / "classifiers" / "food_classifier"
-_classifier_pipe = None
-def get_classifier_pipe():
-    global _classifier_pipe
-    if _classifier_pipe is None:
-        if not HF_MODEL_PATH.exists():
-            raise FileNotFoundError(f"Classifier not found at {HF_MODEL_PATH}")
-        processor = AutoImageProcessor.from_pretrained(str(HF_MODEL_PATH))
-        model = AutoModelForImageClassification.from_pretrained(str(HF_MODEL_PATH))
-        _classifier_pipe = pipeline("image-classification", model=model, device=0)
-    return _classifier_pipe
-
 
 NUTRITION_PATH = BASE_DIR / "data" / "nutrition_db.json"
 GI_PATH = BASE_DIR / "data" / "glycemic_index.json"
@@ -87,22 +73,26 @@ def analyze_image(img: Image.Image, user_health: dict):
 
     # 2️⃣ Run fallback classifier if YOLO fails
     if not results_list or max([f["confidence"] for f in results_list]) < 0.5:
-        classifier = get_classifier_pipe()
-        classifier_results = classifier(img)
-        for res in classifier_results[:3]:  # top 3
-            food_name = res["label"]
-            conf = float(res["score"])
-            info = get_food_info(food_name, conf)
-            info["source"] = "Classifier"
-            info["advice"] = personalize_advice(info, user_health)
-            results_list.append(info)
+        try:
+            classifier_results = classify_food(img)
+            for res in classifier_results[:3]:  # top 3
+                food_name = res["label"]
+                conf = float(res["score"])
+                info = get_food_info(food_name, conf)
+                info["source"] = "Classifier"
+                info["advice"] = personalize_advice(info, user_health)
+                results_list.append(info)
+        except Exception as e:
+            # Classifier is optional, continue with YOLO results only
+            pass
 
     return results_list
 
 def personalize_advice(food_info: dict, user_health: dict):
     advice = food_info.get("advice", "")
     # Example personalized rules
-    if user_health.get("diabetes") and food_info.get("glycemic_index", 0) > 55:
+    gi = food_info.get("glycemic_index")
+    if user_health.get("diabetes") and gi is not None and gi > 55:
         advice += " ⚠️ Limit intake due to diabetes"
     if user_health.get("hypertension") and food_info.get("name", "").lower() in ["salted meat", "processed food"]:
         advice += " ⚠️ High sodium – avoid for hypertension"
