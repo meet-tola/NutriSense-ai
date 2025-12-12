@@ -58,6 +58,8 @@ def get_food_info(food_name: str, confidence: float):
     fat = nutrition.get("fat")
     fiber = nutrition.get("fiber")
     gi = gi_db.get(food_name)
+    flags = nutrition.get("flags", [])
+    health_warnings = nutrition.get("warnings", {})
     
     # Basic advice based on GI
     if gi is None:
@@ -78,7 +80,9 @@ def get_food_info(food_name: str, confidence: float):
         "fat": fat,
         "fiber": fiber,
         "glycemic_index": gi,
-        "advice": advice
+        "advice": advice,
+        "flags": flags,
+        "health_warnings": health_warnings
     }
 
 def _estimate_portion(mask_area: float, food_name: str) -> float:
@@ -86,6 +90,22 @@ def _estimate_portion(mask_area: float, food_name: str) -> float:
     ref_area = 4000
     portion = max(0.3, min(2.0, mask_area / ref_area))
     return portion
+
+def _apply_flag_heuristics(info: dict) -> dict:
+    name_lower = info.get("name", "").lower()
+    flags = set(info.get("flags", []))
+    if "fried" in name_lower:
+        flags.add("fried")
+    if "pepper" in name_lower or "spicy" in name_lower:
+        flags.add("spicy")
+    if "soup" in name_lower:
+        flags.add("soup")
+    if "stew" in name_lower:
+        flags.add("stew")
+    if "rice" in name_lower or "yam" in name_lower or "fufu" in name_lower or "plantain" in name_lower:
+        flags.add("carb-heavy")
+    info["flags"] = list(flags)
+    return info
 
 def _apply_portion_scaling(info: dict, portion: float) -> dict:
     scaled = info.copy()
@@ -98,6 +118,7 @@ def _handle_detection(results_dict: dict, food_name: str, conf_val: float, user_
     info = get_food_info(food_name, conf_val)
     if portion is not None:
         info = _apply_portion_scaling(info, portion)
+    info = _apply_flag_heuristics(info)
     info["advice"] = personalize_advice(info, user_health)
     return info
 
@@ -160,6 +181,9 @@ def analyze_image(img: Image.Image, user_health: dict):
 def personalize_advice(food_info: dict, user_health: dict):
     advice = food_info.get("advice", "")
     warnings = []
+    name_lower = food_info.get("name", "").lower()
+    flags = set(food_info.get("flags", []))
+    health_warnings = food_info.get("health_warnings", {})
     
     # Diabetes warnings
     gi = food_info.get("glycemic_index")
@@ -169,6 +193,8 @@ def personalize_advice(food_info: dict, user_health: dict):
             warnings.append("⚠️ High GI - limit intake for diabetes")
         if carbs and carbs > 30:
             warnings.append("⚠️ High carbs - monitor blood sugar")
+        if health_warnings.get("diabetes"):
+            warnings.append(health_warnings["diabetes"])
     
     # Hypertension warnings
     food_lower = food_info.get("name", "").lower()
@@ -176,12 +202,23 @@ def personalize_advice(food_info: dict, user_health: dict):
         high_sodium_foods = ["fried chicken", "stew", "pepper soup", "jollof rice"]
         if any(food in food_lower for food in high_sodium_foods):
             warnings.append("⚠️ May be high in sodium - limit for hypertension")
+        if health_warnings.get("hypertension"):
+            warnings.append(health_warnings["hypertension"])
     
     # Ulcer warnings
     if user_health.get("ulcer"):
         irritating_foods = ["pepper soup", "fried", "stew"]
         if any(food in food_lower for food in irritating_foods):
             warnings.append("⚠️ May irritate ulcers - consume with caution")
+        if health_warnings.get("ulcer"):
+            warnings.append(health_warnings["ulcer"])
+
+    # Acid reflux / GERD
+    if user_health.get("acid_reflux"):
+        if any(flag in flags for flag in ["fried", "spicy", "acidic"]):
+            warnings.append("⚠️ May trigger reflux")
+        if health_warnings.get("acid_reflux"):
+            warnings.append(health_warnings["acid_reflux"])
     
     # Weight management
     calories = food_info.get("calories")
