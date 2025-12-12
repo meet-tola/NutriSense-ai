@@ -54,7 +54,8 @@ class YOLOFoodDetector:
                 import yaml
                 with open(yaml_path, 'r') as f:
                     data = yaml.safe_load(f)
-                    if 'names' in data:
+                    # Check if data is not None and contains 'names' key
+                    if data and isinstance(data, dict) and 'names' in data:
                         return data['names']
         except Exception as e:
             logger.warning(f"Could not load class names from YAML: {e}")
