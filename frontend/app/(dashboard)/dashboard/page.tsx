@@ -354,7 +354,8 @@ export default function DashboardLanding() {
               </Button>
             </div>
           </div>
-        </div>
+
+          {/* Bottom Input */}
           <div className="w-full max-w-3xl px-4">
             <div className="relative">
               <Input
@@ -389,6 +390,7 @@ export default function DashboardLanding() {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Bottom Disclaimer */}
