@@ -7,8 +7,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-blue-50">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-24">
         <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h1 className="text-4xl font-serif text-gray-900 text-center mb-4">
+              NutriSense AI
+            </h1>
           <h1 className="text-5xl md:text-6xl font-serif">
             AI-Powered Nutrition Intelligence
           </h1>
@@ -52,6 +55,17 @@ export default function HomePage() {
                 </p>
               </CardContent>
             </Card>
+            <Card className="border border-gray-200 hover:border-gray-400 transition-colors shadow-none bg-transparent">
+              <CardContent className="pt-6 space-y-4">
+                <div className="h-12 w-12 rounded-full border-2 border-gray-300 flex items-center justify-center bg-transparent">
+                  <Heart className="h-6 w-6 text-gray-700" />
+                </div>
+                <h3 className="font-semibold text-lg">Health Issues Management</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Predict health issues like blood sugar spikes and get glycemic index insights for better control.
+                </p>
+              </CardContent>
+            </Card>
 
             <Card className="border border-gray-200 hover:border-gray-400 transition-colors shadow-none bg-transparent">
               <CardContent className="pt-6 space-y-4">
@@ -65,17 +79,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-gray-200 hover:border-gray-400 transition-colors shadow-none bg-transparent">
-              <CardContent className="pt-6 space-y-4">
-                <div className="h-12 w-12 rounded-full border-2 border-gray-300 flex items-center justify-center bg-transparent">
-                  <Heart className="h-6 w-6 text-gray-700" />
-                </div>
-                <h3 className="font-semibold text-lg">Diabetes Management</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  Predict blood sugar spikes and get glycemic index insights for better diabetes control
-                </p>
-              </CardContent>
-            </Card>
+            
           </div>
         </div>
 

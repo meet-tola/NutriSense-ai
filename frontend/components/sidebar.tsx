@@ -53,13 +53,13 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "health-diary", label: "My Health Diary", icon: Book, href: "/health-diary" },
     { id: "meal-planner", label: "Meal Planner", icon: Apple, href: "/meal-planner" },
-    // { id: "nutrition-guide", label: "Nutrition Guide", icon: BookOpen, href: "/nutrition-guide" },
     { id: "food-database", label: "Food Database", icon: Database, href: "/food-database" },
   ];
 
   const handleNewChat = async () => {
     const newId = await createConversation(user.id);
     router.push(`/dashboard/${newId}`);
+    onNavigate?.(); // Close sidebar on mobile after starting new chat
   };
 
   const handleLogoAreaClick = () => {
@@ -83,6 +83,11 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
   const getActiveIndicator = (isActive: boolean) => {
     if (!isActive) return null;
     return <div className="w-2 h-2 rounded-full bg-primary shrink-0" />;
+  };
+
+  // Helper to close sidebar on mobile after navigation
+  const handleItemClick = () => {
+    onNavigate?.();
   };
 
   return (
@@ -172,7 +177,6 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
               </Button>
             </TooltipTrigger>
 
-            {/* Tooltip only on desktop */}
             <TooltipContent side="right" className="hidden lg:block">
               Close sidebar
             </TooltipContent>
@@ -187,10 +191,8 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
             (id === "dashboard" && pathname.startsWith("/dashboard")) ||
             (id === "health-diary" && pathname.startsWith("/health-diary")) ||
             (id === "meal-planner" && pathname.startsWith("/meal-planner")) ||
-            (id === "nutrition-guide" && pathname.startsWith("/nutrition-guide")) ||
             (id === "food-database" && pathname.startsWith("/food-database"));
 
-          // Wrap the button with Tooltip when sidebar is collapsed
           const buttonContent = (
             <Button
               variant="ghost"
@@ -210,12 +212,11 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
               >
                 {label}
               </span>
-              {/* No indicator for nav items */}
             </Button>
           );
 
           return (
-            <Link key={id} href={href}>
+            <Link key={id} href={href} onClick={handleItemClick}>
               {collapsed ? (
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
@@ -252,6 +253,7 @@ export default function Sidebar({ onNavigate, user, conversations }: SidebarProp
                   <Link
                     key={conv.id}
                     href={`/dashboard/${conv.id}`}
+                    onClick={handleItemClick} // Close on mobile
                     className={cn(
                       "flex items-center justify-between px-4 py-2 rounded-md hover:bg-gray-100 text-sm transition-colors",
                       isActive && "bg-gray-100 text-gray-900"
