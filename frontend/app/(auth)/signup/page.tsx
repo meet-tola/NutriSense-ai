@@ -96,7 +96,7 @@ export default function SignUpPage() {
               placeholder=" "
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-sm"
+              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-[16px]"
             />
             <label
               htmlFor="fullName"
@@ -116,7 +116,7 @@ export default function SignUpPage() {
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-sm"
+              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-[16px]"
             />
             <label
               htmlFor="email"
