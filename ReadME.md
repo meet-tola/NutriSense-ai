@@ -377,7 +377,9 @@ Contributions are welcome! Please follow these steps:
 Developed collaboratively during the **Building in Lagos Impact Hackathon**.
 
 **Core Contributors:**
-- Project Lead & Developer: meet-tola
+- Wasiu Tolani - Project Lead & Full-Stack Developer: https://github.com/meet-tola
+- Abdulah Abdulsobur - Frontend Developer: https://github.com/AbdulSobur1
+- Samuel John - Backend & ML Engineer: https://github.com/CodeGallantX
 
 ---
 
