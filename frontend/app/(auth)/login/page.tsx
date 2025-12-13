@@ -90,7 +90,7 @@ export default function SignInPage() {
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-sm"
+              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-[16px]"
             />
             <label
               htmlFor="email"
@@ -110,7 +110,7 @@ export default function SignInPage() {
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-sm pr-10 sm:pr-12"
+              className="peer block w-full h-12 rounded-lg border border-gray-300 bg-transparent px-4 sm:px-6 pb-2 pt-3 text-[16px] pr-10 sm:pr-12"
             />
             <label
               htmlFor="password"
