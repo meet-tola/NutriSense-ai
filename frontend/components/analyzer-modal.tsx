@@ -92,7 +92,6 @@ export default function AnalyzerModal({
   const [error, setError] = useState<string | null>(null);
   const [userPrompt, setUserPrompt] = useState("Analyze this food");
   const [finalResult, setFinalResult] = useState<FinalResult | null>(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [showCompletion, setShowCompletion] = useState(false);
   const [showQuickSummary, setShowQuickSummary] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -201,13 +200,6 @@ export default function AnalyzerModal({
       const message = err instanceof Error ? err.message : "Network/CORS error. Please retry.";
       throw new Error(message);
     }
-  };
-
-  const confidenceBadge = (confidence?: number) => {
-    const score = Math.round((confidence ?? 0) * 100);
-    if (score >= 80) return "bg-green-100 text-green-800 border-green-200";
-    if (score >= 50) return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    return "bg-red-100 text-red-800 border-red-200";
   };
 
   const asArray = (value: unknown): string[] => {
@@ -326,7 +318,6 @@ export default function AnalyzerModal({
     setFinalResult(null);
     setPipelineStage("idle");
     setStatusMessage(null);
-    setUploadedImageUrl(null);
     setShowCompletion(false);
     setShowQuickSummary(false);
     stopCamera();
@@ -644,7 +635,7 @@ export default function AnalyzerModal({
                           <p className="font-semibold">{String(finalResult.meal_summary?.total_fat ?? "—")} g</p>
                         </div>
                       </div>
-                      {finalResult.meal_summary?.score && (
+                      {finalResult.meal_summary?.score !== undefined && finalResult.meal_summary?.score !== null && (
                         <div className="pt-2">
                           <p className="text-xs text-gray-500 mb-1">Meal score</p>
                           <Progress value={Number(finalResult.meal_summary.score)} className="h-2" />
