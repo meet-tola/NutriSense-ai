@@ -55,7 +55,7 @@ export default function DashboardPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initial welcome message for typing effect (for diabetes users)
-  const initialMessage = "Hello! I'm your diabetes health assistant. I can help you track meals, analyze nutrition, and manage your blood sugar levels. How can I assist you today?";
+  const initialMessage = "Hello! I'm your health assistant. I can help you track meals, analyze nutrition, and manage your blood sugar levels. How can I assist you today?";
 
   // Fetch user on mount
   useEffect(() => {
